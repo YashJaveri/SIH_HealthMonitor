@@ -1,6 +1,7 @@
 import React from "react";
 import ProgressCircle from "react-native-progress-circle";
 import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
+import LineChart from "react-native-responsive-linechart";
 
 import Constants from "../Constants";
 
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width-12,
     borderRadius: 8,
     flexDirection: 'column'
-  }
+  },
 });
 
 export class Card extends React.Component{
@@ -52,6 +53,7 @@ render(){
     }
 }
 
+
 export default class HomeScreen extends React.Component{
 
   static navigationOptions = ({ navigation }) => {
@@ -79,8 +81,38 @@ export default class HomeScreen extends React.Component{
 
   constructor(props){
     super(props);
+    this.state={
+      data: [-10, -15, 40, 60, 78, 42, 56],
+    };
   }
   
+  
+ config = { 
+  line: {
+    visible: true,
+    strokeWidth: 2,
+    strokeColor: Constants.SECONDARY3
+  },
+  area: {
+    visible: false
+  },
+  yAxis: {
+    visible: true,
+    labelFormatter: v => String(v),
+    labelColor: "#fff",
+  },
+  xAxis: {
+    visible: true
+  },
+  grid: {
+    stepSize: 15,
+    backgroundColor: Constants.CARD_BACKGROUND,
+  },
+  insetY: 10,
+  insetX: 10,
+  backgroundColor: Constants.CARD_BACKGROUND
+};
+
   componentDidMount(){
 
   }
@@ -95,7 +127,10 @@ export default class HomeScreen extends React.Component{
         style={{flex: 1, width: Dimensions.get('screen').width}}>
         <View style={{height: Dimensions.get('window').height/1.75, width: Dimensions.get('window').width-16,
             backgroundColor: Constants.CARD_BACKGROUND,
-            padding: 10, marginVertical: 12, borderRadius: 8,}}/>
+            padding: 10, marginVertical: 12, borderRadius: 8,}}>
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start'}}>Heart rate</Text>    
+        <LineChart style={{ flex: 1 , margin:10,justifyContent:'center',alignItems:'center' }} config={this.config} data={this.state.data} />     
+        </View>
         <Card src={require("../Assets/thermometer.png")} title="Temperature" value="100 F" color={Constants.SECONDARY1} percent={40}/>
         <Card src={require("../Assets/oxygen.png")} title="Oxygen Level" value="160" color={Constants.SECONDARY2} percent={40}/>
         <Card src={require("../Assets/sugar.png")} title="Sugar level" value="20" color={Constants.SECONDARY3} percent={40}/>
