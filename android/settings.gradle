@@ -1,0 +1,3 @@
+rootProject.name = 'SihTest'
+
+include ':app'
