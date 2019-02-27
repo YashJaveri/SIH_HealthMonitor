@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar,Dimensions, TextInput, AsyncStorage } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar,Dimensions, TextInput, AsyncStorage ,Alert } from "react-native";
 import { createStackNavigator,createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
+import RtcClient from '../RtcClient';
 
 const styles = StyleSheet.create({
   mainStyle: {
@@ -43,10 +44,14 @@ export default class LoginScreen extends React.Component{
 
     firebase.auth().signInWithEmailAndPassword(email,password)
     .then( (userCred)=>{
-      console.log('user logged in')
+      console.log('user logged in');
+      RtcClient.email=email;
       this.props.navigation.replace('home');
     })
-    .catch( (err)=>console.log('user creation error',err))
+    .catch( (err)=>{
+      console.log('user creation error',err);
+      Alert.alert('auth error');
+    })
 
 
   

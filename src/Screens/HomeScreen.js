@@ -118,11 +118,11 @@ export default class HomeScreen extends React.Component{
 
   componentDidMount(){
 
-    this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
-      this.setState({
-        user:user,
-      });
-    })
+    // this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
+    //   this.setState({
+    //     user:user,
+    //   });
+    // })
 
 
     let rtc = new RtcClient();
@@ -136,7 +136,7 @@ export default class HomeScreen extends React.Component{
 
   render(){
 
-    if(!this.state.user) this.props.navigation.replace('login');
+    //if(!this.state.user) this.props.navigation.replace('login');
     
     return(
       <ScrollView scrollDirection="vertical" contentContainerStyle={{justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND}} 

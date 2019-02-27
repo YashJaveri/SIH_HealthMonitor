@@ -12,7 +12,7 @@ export default class RtcClient{
 
   static peerEmail=null; //set this before sending offer
   static videoUrl=null;  //static so that we dont need to create another RtcClient object in Video.js
-
+  static email=null;
     
 
   constructor(){
@@ -23,7 +23,6 @@ export default class RtcClient{
     configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
     this.pc = new RTCPeerConnection(configuration);
 
-    email='someRand@email.com';
 
     data={
         temp:null,
@@ -41,7 +40,7 @@ export default class RtcClient{
             console.log('ws connection opened');
             let msg = {
                 type :'register',
-                email : this.email, //send firebase email here
+                email : RtcClient.email, //send firebase email here
             }
 
             //send register request
@@ -65,7 +64,7 @@ export default class RtcClient{
 
                         let msg={
                             type: "answer",
-                            from: this.email,
+                            from: RtcClient.email,
                             to: RtcClient.peerEmail,
                             answer: answer
                         }
@@ -180,7 +179,7 @@ export default class RtcClient{
             let msg ={
                 type:'offer',
                 to: RtcClient.peerEmail, 
-                from: this.email,
+                from: RtcClient.email,
                 offer:this.pc.localDescription,
             }
 

@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar,Dimensions, TextInput, AsyncStorage } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar,Dimensions, TextInput, AsyncStorage ,Alert } from "react-native";
 import { createStackNavigator,createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
+import RtcClient from '../RtcClient';
 
 const styles = StyleSheet.create({
   mainStyle: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class LoginScreen extends React.Component{
+export default class SignUp extends React.Component{
 
   static navigationOptions = ({ navigation }) => {
     return{
@@ -30,6 +31,7 @@ export default class LoginScreen extends React.Component{
   constructor(props){
     super(props);
     this.password = "";
+    this.confirmPassword="";
     this.email = "";
   }
 
@@ -38,14 +40,24 @@ export default class LoginScreen extends React.Component{
     StatusBar.setBarStyle('dark-content', true);
   }
 
-  login =  (email, password) => {
+  login =  (email, password , confirmPassword) => {
 
+
+    if(password !== confirmPassword){
+      Alert.alert('passwords do not match');
+      return;
+    }
+    
     firebase.auth().createUserWithEmailAndPassword(email,password)
     .then( (userCred)=>{
-      console.log('user created ')
+      console.log('user created ');
+      RtcClient.email = email;
       this.props.navigation.replace('home');
     })
-    .catch( (err)=>console.log('user creation error',err))
+    .catch( (err)=>{
+      console.log('user creation error',err);
+      Alert.alert('auth error');
+    });
   
   }
 
@@ -70,7 +82,15 @@ export default class LoginScreen extends React.Component{
             onChangeText={(text) => {this.password = text}}
           />
         </View>
-        <TouchableOpacity onPress={() => this.login(this.email, this.password)} activeOpacity={0.8}>
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6}]}>
+          <TextInput style={{}}
+            selectionColor={Constants.SECONDARY2}
+            placeholder="confirm Password"
+            numberOfLines={1}
+            onChangeText={(text) => {this.confirmPassword = text}}
+          />
+        </View>
+        <TouchableOpacity onPress={() => this.login(this.email, this.password , this.confirmPassword)} activeOpacity={0.8}>
           <View style={{ width: Dimensions.get('screen').width/1.4, height: 42, borderWidth: 2, borderRadius: 24, borderColor: Constants.SECONDARY,
             marginVertical: 42, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={{fontSize: 16, color: 'white'}}>SignUp</Text>
