@@ -1,0 +1,48 @@
+var WebSocketServer = require('websocket').server;
+var http = require('http');
+var connections = [];
+var server = http.createServer(function(request, response) {
+    console.log((new Date()) + ' Received request for ' + request.url);
+    response.writeHead(404);
+    response.end();
+});
+server.listen(8080, function() {
+    console.log((new Date()) + ' Server is listening on port 8080');
+});
+let wsServer = new WebSocketServer({
+    httpServer: server,
+    autoAcceptConnections: false
+});
+
+wsServer.on('request',(request)=>{
+    let connection = request.accept('echo-protocol',request.origin);
+    connection.on('message',(message)=>{
+        let data;
+        if(message.type === 'binary'){
+            data = JSON.parse(message.binaryData.toString('utf8'));
+        }else if(message.type === 'utf8'){
+            data = JSON.parse(message.utf8Data.toString());
+        }
+        if(data){
+        switch(data.type){
+            case 'register':
+             connections.push({
+                 user:data.email,
+                 connection:connection,
+             })
+            break;
+            case 'offer':
+            let user = connections.find(u=>u.user === data.to);
+            if(connection){
+                user.connection.send(JSON.stringify({type:'offer',user:data.email,offer:data.offer}));
+                connection.send(JSON.stringify({type:'response',message:'Sent'}));
+            }else{
+                connection.send(JSON.stringify({type:'response',message:'User not found'}));
+            }
+            break;
+        }
+    }else{
+        connection.send(JSON.stringify({type:'response',message:'failed parsing data'}));
+    }
+    })
+})

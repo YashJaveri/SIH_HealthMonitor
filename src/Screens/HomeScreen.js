@@ -3,6 +3,7 @@ import ProgressCircle from "react-native-progress-circle";
 import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
 import LineChart from "react-native-responsive-linechart";
 
+import RtcClient from '../RtcClient';
 import Constants from "../Constants";
 
 const styles = StyleSheet.create({
@@ -114,6 +115,8 @@ export default class HomeScreen extends React.Component{
 };
 
   componentDidMount(){
+
+    let rtc = new RtcClient();
 
   }
 
