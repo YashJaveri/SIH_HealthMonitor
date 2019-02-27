@@ -81,14 +81,6 @@ export default class HomeScreen extends React.Component{
     super(props);
   }
   
-  componentDidMount(){
-
-  }
-
-  componentWillUnmount(){
-
-  }
-
   render(){
     return(
       <ScrollView scrollDirection="vertical" contentContainerStyle={{justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND}} 
