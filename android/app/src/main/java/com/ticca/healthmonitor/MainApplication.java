@@ -1,7 +1,9 @@
-package com.sihtest;
+package com.ticca.healthmonitor;
 
 import android.app.Application;
 
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.facebook.react.ReactApplication;
 import com.oney.WebRTCModule.WebRTCModulePackage;
 import com.horcrux.svg.SvgPackage;
@@ -26,7 +28,9 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new WebRTCModulePackage(),
-            new SvgPackage()
+            new SvgPackage(),
+            new RNFirebasePackage(),
+            new RNFirebaseAuthPackage()
       );
     }
 

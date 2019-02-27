@@ -2,7 +2,7 @@ import React from "react";
 import ProgressCircle from "react-native-progress-circle";
 import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
 import LineChart from "react-native-responsive-linechart";
-
+import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
 import Constants from "../Constants";
 
@@ -84,7 +84,9 @@ export default class HomeScreen extends React.Component{
     super(props);
     this.state={
       data: [-10, -15, 40, 60, 78, 42, 56],
+      user:null,
     };
+    this.unsubscriber = null;
   }
   
   
@@ -116,15 +118,26 @@ export default class HomeScreen extends React.Component{
 
   componentDidMount(){
 
+    this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
+      this.setState({
+        user:user,
+      });
+    })
+
+
     let rtc = new RtcClient();
 
   }
 
   componentWillUnmount(){
 
+    this.unsubscriber();
   }
 
   render(){
+
+    if(!this.state.user) this.props.navigation.replace('login');
+    
     return(
       <ScrollView scrollDirection="vertical" contentContainerStyle={{justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND}} 
         style={{flex: 1, width: Dimensions.get('screen').width}}>
