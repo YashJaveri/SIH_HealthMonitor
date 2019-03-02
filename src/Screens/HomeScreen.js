@@ -1,6 +1,7 @@
 import React from "react";
 import ProgressCircle from "react-native-progress-circle";
-import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity , Modal, TextInput ,Button} from "react-native";
+import {Dialog} from 'react-native-simple-dialogs';
 import LineChart from "react-native-responsive-linechart";
 import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
@@ -93,6 +94,7 @@ export default class HomeScreen extends React.Component{
     this.state={
       data: [-10, -15, 40, 60, 78, 42, 56],
       user:null,
+      modalVisible:true,
     };
     this.unsubscriber = null;
   }
@@ -140,6 +142,35 @@ export default class HomeScreen extends React.Component{
       <ScrollView scrollDirection="vertical" contentContainerStyle={{justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND}} 
         style={{flex: 1, width: Dimensions.get('screen').width}}>
         <NotificationListener/>
+
+          <Dialog 
+          visible={this.state.modalVisible}
+          title='Add patient id'
+          >
+          <View
+            width={Dimensions.get('screen').width/1.3}
+            style={{alignItems:'center',justifyContent:'center',backgroundColor:'#fff', alignSelf: 'center'}}>
+
+              <TextInput
+                placeholder='patient id'
+                numberOfLines={1}
+                width={Dimensions.get('screen').width/2.3}
+                underlineColorAndroid='#aaa'
+                onChangeText={(text) => { this.peerEmail = text }}
+              />
+              <Button
+                title='connect'
+                onPress={()=>{
+                  console.log(this.peerEmail);
+                  this.setState({
+                    modalVisible:false
+                  })
+                }}
+              />
+
+            </View>
+          </Dialog>    
+        
         <View style={{height: Dimensions.get('window').height/1.75, width: Dimensions.get('window').width-16,
             backgroundColor: Constants.CARD_BACKGROUND,
             padding: 10, marginVertical: 12, borderRadius: 8}}>
