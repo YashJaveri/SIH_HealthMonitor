@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar,Dimensions, TextInput, AsyncStorage ,Alert } from "react-native";
-import { createStackNavigator,createAppContainer } from "react-navigation";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar, Dimensions, TextInput, AsyncStorage, Alert } from "react-native";
+import { createStackNavigator, createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
@@ -13,88 +13,98 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   inpBox: {
-    width: Dimensions.get('screen').width/1.45,
+    width: Dimensions.get('screen').width / 1.45,
     height: 42,
     borderWidth: 1.5,
-    borderColor: Constants.LIGHTGREY
+    borderColor: Constants.PRIMARY
   }
 });
 
-export default class SignUp extends React.Component{
+export default class SignUp extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
-    return{
+    return {
       header: null
     }
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.password = "";
-    this.confirmPassword="";
+    this.confirmPassword = "";
     this.email = "";
   }
 
-  componentDidMount(){
-    Platform.OS==="android"?StatusBar.setBackgroundColor("#f5f6fa"):(null);
-    StatusBar.setBarStyle('dark-content', true);
+  componentDidMount() {
+    Platform.OS === "android" ? StatusBar.setBackgroundColor("#261C34") : (null);
+    StatusBar.setBarStyle('light-content', true);
   }
 
-  login =  (email, password , confirmPassword) => {
+  signUp = (email, password, confirmPassword) => {
 
 
-    if(password !== confirmPassword){
+    if (password !== confirmPassword && password!=="" && email!=="") {
       Alert.alert('passwords do not match');
       return;
-    }
-    
-    firebase.auth().createUserWithEmailAndPassword(email,password)
-    .then( (userCred)=>{
-      console.log('user created ');
-      RtcClient.email = email;
-      this.props.navigation.replace('home');
-    })
-    .catch( (err)=>{
-      console.log('user creation error',err);
-      Alert.alert('auth error');
-    });
-  
   }
 
-  render(){
-    return(
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCred) => {
+        console.log('user created ');
+        RtcClient.email = email;
+        this.props.navigation.replace('home');
+      })
+      .catch((err) => {
+        Alert.alert('Authentication failed');
+      });
+
+  }
+
+  render() {
+    return (
       <View style={styles.mainStyle}>
-        <Text style={{fontSize: 24, marginVertical: Dimensions.get('screen').height/6, fontWeight: 'bold', color: 'white'}}>SignUp</Text>
-        <View style={[styles.inpBox, { borderBottomWidth: 0.75, borderTopLeftRadius: 6, borderTopRightRadius: 6}]}>
-          <TextInput style={{}}
-            selectionColor={Constants.SECONDARY2}
+        <Text style={{ fontSize: 24, marginVertical: Dimensions.get('screen').height / 6, fontWeight: 'bold', color: Constants.PRIMARY }}>WELCOME</Text>
+        <View style={[styles.inpBox, { borderBottomWidth: 0.75, borderTopLeftRadius: 6, borderTopRightRadius: 6 }]}>
+          <TextInput placeholderTextColor={Constants.LIGHT_GREY}
+            style={{color: Constants.PRIMARY}}
+            selectionColor={Constants.SECONDARY1}
             placeholder="Email"
             numberOfLines={1}
-            onChangeText={(text) => {this.email = text}}
+            onChangeText={(text) => { this.email = text }}
             autoFocus={true}
           />
         </View>
-        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6}]}>
-          <TextInput style={{}}
-            selectionColor={Constants.SECONDARY2}
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomWidth: 0.75}]}>
+          <TextInput placeholderTextColor={Constants.LIGHT_GREY}
+            style={{color: Constants.PRIMARY}}
+            selectionColor={Constants.SECONDARY1}
             placeholder="Password"
+            secureTextEntry={true}
             numberOfLines={1}
-            onChangeText={(text) => {this.password = text}}
+            onChangeText={(text) => { this.password = text }}
           />
         </View>
-        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6}]}>
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }]}>
           <TextInput style={{}}
-            selectionColor={Constants.SECONDARY2}
-            placeholder="confirm Password"
+            placeholderTextColor={Constants.LIGHT_GREY}
+            style={{color: Constants.PRIMARY}}
+            selectionColor={Constants.SECONDARY1}
+            placeholder="Confirm Password"
             numberOfLines={1}
-            onChangeText={(text) => {this.confirmPassword = text}}
+            secureTextEntry={true}
+            onChangeText={(text) => { this.confirmPassword = text }}
           />
         </View>
-        <TouchableOpacity onPress={() => this.login(this.email, this.password , this.confirmPassword)} activeOpacity={0.8}>
-          <View style={{ width: Dimensions.get('screen').width/1.4, height: 42, borderWidth: 2, borderRadius: 24, borderColor: Constants.SECONDARY,
-            marginVertical: 42, justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{fontSize: 16, color: 'white'}}>SignUp</Text>
+        <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword)} activeOpacity={0.8}>
+          <View style={{
+            width: Dimensions.get('screen').width / 1.5, height: 42, borderWidth: 2, borderRadius: 24, borderColor: Constants.PRIMARY,
+            marginVertical: 42, justifyContent: 'center', alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 16, color: Constants.PRIMARY }}>Login</Text>
           </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.navigation.replace('login')}>
+          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Already User?Sign In</Text>
         </TouchableOpacity>
       </View>
     );

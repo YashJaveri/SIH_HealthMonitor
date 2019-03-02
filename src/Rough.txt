@@ -46,3 +46,14 @@ wsServer.on('request',(request)=>{
     }
     })
 })
+
+
+
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6}]}>
+          <TextInput style={{}}
+            selectionColor={Constants.SECONDARY2}
+            placeholder="confirm Password"
+            numberOfLines={1}
+            onChangeText={(text) => {this.confirmPassword = text}}
+          />
+        </View>

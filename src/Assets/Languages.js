@@ -1,6 +1,4 @@
 module.exports = {
-
-
     english: {
         hr:"Heart Rate",
         temp:"Temperature",
