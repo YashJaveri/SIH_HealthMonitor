@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "573983806378",
+    "firebase_url": "https://healthmonitor-sih.firebaseio.com",
+    "project_id": "healthmonitor-sih",
+    "storage_bucket": "healthmonitor-sih.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573983806378:android:aa9ba2b0ec39a1bd",
+        "android_client_info": {
+          "package_name": "com.ticca.healthmonitor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573983806378-ahdaoj42olh5j1jfoehltmefejtjvjac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHqyO1nB_yXfNMi7Pgr4ZMXJxXUYs_o-4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

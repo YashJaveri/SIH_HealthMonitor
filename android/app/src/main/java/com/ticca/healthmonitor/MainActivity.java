@@ -1,4 +1,4 @@
-package com.sihtest;
+package com.ticca.healthmonitor;
 
 import com.facebook.react.ReactActivity;
 
