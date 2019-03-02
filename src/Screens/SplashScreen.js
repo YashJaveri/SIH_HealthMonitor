@@ -31,6 +31,33 @@ export default class SplashScreen extends React.Component{
   
   componentDidMount(){
 
+    //check user permission
+    firebase.messaging().hasPermission()
+          .then((permisson)=>{
+      
+          if(permisson){
+            //user has given permisson
+            console.log('permisson granted');
+      
+          }else{
+      
+            //permisson not granted
+            //request permissons
+      
+            firebase.messaging().requestPermission()
+              .then(()=>{
+                //granted
+                console.log('permisson granted');
+              }).catch((err)=>{
+                console.log(err);
+              })
+      
+          }
+        });
+        
+
+    //check user auth 
+
     this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
         if(!user){
             this.props.navigation.replace('login');
