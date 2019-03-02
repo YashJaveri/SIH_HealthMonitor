@@ -17,7 +17,7 @@ export default class RtcClient{
 
   constructor(){
 
-    socketURl = 'ws://demos.kaazing.com/echo'; 
+    socketURl = 'ws://healthmonitor-signalserver.herokuapp.com'; 
     this.ws = new WebSocket(socketURl);
 
     configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
@@ -39,15 +39,14 @@ export default class RtcClient{
             console.log('ws connection opened');
             let msg = {
                 type :'register',
-                email : RtcClient.email, //send firebase email here
+                from : RtcClient.email, //send firebase email here
             }
-
             //send register request
            this.ws.send(JSON.stringify(msg));
+           this.sendOffer();
         }
 
        this.ws.onmessage = (event)=>{
-
            console.log('ws message received');
 
             switch(event.data.type){
@@ -56,7 +55,7 @@ export default class RtcClient{
                     this.pc.addIceCandidate(new RTCIceCandidate(ev.data.candidate));
                     break;
 
-                case "offer":
+                /*case "offer":
                     this.pc.setRemoteDescription(new RTCSessionDescription(ev.data.offer));
 
                     this.pc.createAnswer().then(answer => {
@@ -66,15 +65,12 @@ export default class RtcClient{
                             from: RtcClient.email,
                             to: RtcClient.peerEmail,
                             answer: answer
-                        }
-                        
+                        }                    
                         this.ws.send(JSON.stringify(msg));
-
                     });     
-                    break;
+                    break;*/
 
-              case "answer":
-                
+              case "answer":            
                 this.pc.setRemoteDescription(new RTCSessionDescription(ev.data.answer));
                 break;
 
@@ -102,8 +98,12 @@ export default class RtcClient{
             if(event && event.candidate){
                let msg={
                    type : 'candidate',
+                   from: RtcClient.email,
                    to: RtcClient.peerEmail,
                }
+            this.ws.send(JSON.stringify(msg));
+            //create data channel before offer is created
+            this.createDataChannel();
             }
            }
 
@@ -151,10 +151,6 @@ export default class RtcClient{
     
 
  sendOffer = ()=>{
-
-    //create data channel before offer is created
-    createDataChannel();
-
     this.pc.createOffer().then(desc => {
         this.pc.setLocalDescription(desc).then(() => {
             // Send pc.localDescription to peer

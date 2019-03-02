@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
   }
 });
 
+const notifManager = require("../Managers/NotificationManager");
+
 export default class SplashScreen extends React.Component{
 
   static navigationOptions = ({ navigation }) => {
@@ -30,46 +32,16 @@ export default class SplashScreen extends React.Component{
   }
   
   componentDidMount(){
-
-    //check user permission
-    firebase.messaging().hasPermission()
-          .then((permisson)=>{
-      
-          if(permisson){
-            //user has given permisson
-            console.log('permisson granted');
-      
-          }else{
-      
-            //permisson not granted
-            //request permissons
-      
-            firebase.messaging().requestPermission()
-              .then(()=>{
-                //granted
-                console.log('permisson granted');
-              }).catch((err)=>{
-                console.log(err);
-              })
-      
-          }
-        });
-        
-
+    notifManager.checkPermissions();
     //check user auth 
-
     this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
         if(!user){
             this.props.navigation.replace('login');
-            console.log('SplashScreen  user not logged in ');
         }else{
             RtcClient.email = user.email;
-            console.log('splashscreen user logged in')
             this.props.navigation.replace('home');            
         }
-      });
-
-      
+      });   
   }
 
   componentWillUnmount(){
