@@ -4,6 +4,8 @@ import android.app.Application;
 
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.facebook.react.ReactApplication;
 import com.oney.WebRTCModule.WebRTCModulePackage;
 import com.horcrux.svg.SvgPackage;
@@ -30,7 +32,10 @@ public class MainApplication extends Application implements ReactApplication {
             new WebRTCModulePackage(),
             new SvgPackage(),
             new RNFirebasePackage(),
-            new RNFirebaseAuthPackage()
+            new RNFirebaseAuthPackage(),
+            new RNFirebaseNotificationsPackage(),
+            new RNFirebaseMessagingPackage()
+            
       );
     }
 

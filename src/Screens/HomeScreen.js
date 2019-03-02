@@ -5,6 +5,8 @@ import LineChart from "react-native-responsive-linechart";
 import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
 import Constants from "../Constants";
+import NotificationListener from '../Managers/NotificationListener';
+
 
 
 const languages = require('../Assets/Languages').hindi;
@@ -123,8 +125,7 @@ export default class HomeScreen extends React.Component{
 };
 
   componentDidMount(){
-    let rtc = new RtcClient();
-    console.log("rtc");
+    let rtc = new RtcClient();    
   }
 
   componentWillUnmount(){
@@ -138,6 +139,7 @@ export default class HomeScreen extends React.Component{
     return(
       <ScrollView scrollDirection="vertical" contentContainerStyle={{justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND}} 
         style={{flex: 1, width: Dimensions.get('screen').width}}>
+        <NotificationListener/>
         <View style={{height: Dimensions.get('window').height/1.75, width: Dimensions.get('window').width-16,
             backgroundColor: Constants.CARD_BACKGROUND,
             padding: 10, marginVertical: 12, borderRadius: 8}}>

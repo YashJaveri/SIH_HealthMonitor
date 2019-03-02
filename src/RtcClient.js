@@ -43,10 +43,10 @@ export default class RtcClient{
             }
             //send register request
            this.ws.send(JSON.stringify(msg));
+           this.sendOffer();
         }
 
        this.ws.onmessage = (event)=>{
-
            console.log('ws message received');
 
             switch(event.data.type){
@@ -103,7 +103,7 @@ export default class RtcClient{
                }
             this.ws.send(JSON.stringify(msg));
             //create data channel before offer is created
-            createDataChannel();
+            this.createDataChannel();
             }
            }
 
