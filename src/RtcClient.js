@@ -43,6 +43,7 @@ export default class RtcClient{
             }
             //send register request
            this.ws.send(JSON.stringify(msg));
+           this.createDataChannel();
            this.sendOffer();
         }
 
@@ -113,6 +114,7 @@ export default class RtcClient{
   }
 
  createDataChannel = ()=>{
+
     if (this.pc.textDataChannel) {
         return;
         }

@@ -41,7 +41,8 @@ export default class SplashScreen extends React.Component{
             RtcClient.email = user.email;
             this.props.navigation.replace('home');            
         }
-      });   
+      });
+        
   }
 
   componentWillUnmount(){

@@ -151,7 +151,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-background-task')
     implementation project(':react-native-firebase')
     implementation project(':react-native-webrtc')
     implementation project(':react-native-svg')

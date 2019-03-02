@@ -164,7 +164,8 @@ export default class HomeScreen extends React.Component{
                   console.log(this.peerEmail);
                   this.setState({
                     modalVisible:false
-                  })
+                  });
+                  RtcClient.peerEmail=this.peerEmail;
                 }}
               />
 
