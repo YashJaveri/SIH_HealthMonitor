@@ -23,13 +23,12 @@ export default class RtcClient{
     configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
     this.pc = new RTCPeerConnection(configuration);
 
-
     data={
         temp:null,
         heartRate:null,
         oxygenLvl:null,
         sugarLvl:null,
-        BloodPressure:null,
+        bloodPressure:null,
     }
 
         //socket handelers 
@@ -71,10 +70,8 @@ export default class RtcClient{
                         
                         this.ws.send(JSON.stringify(msg));
 
-                    });
-                    
+                    });     
                     break;
-
 
               case "answer":
                 
@@ -88,7 +85,6 @@ export default class RtcClient{
 
 
         }
-
 
        this.ws.onclose = (event)=>{
             console.log('websocket closed',event.code,event.reason);
@@ -104,7 +100,6 @@ export default class RtcClient{
             console.log('onIceCandidate');
            
             if(event && event.candidate){
-           
                let msg={
                    type : 'candidate',
                    to: RtcClient.peerEmail,
@@ -112,14 +107,10 @@ export default class RtcClient{
             }
            }
 
-
         this.pc.onaddstream = (stream)=>{
            RtcClient.videoUrl = stream.toUrl();
         }   
-           
-
   }
- 
 
  createDataChannel = ()=>{
     if (this.pc.textDataChannel) {
@@ -129,38 +120,30 @@ export default class RtcClient{
         var dataChannel = this.pc.createDataChannel("text");
     
         dataChannel.onerror = function (error) {
-        
             console.log("dataChannel.onerror", error);
-
         };
     
-        dataChannel.onmessage = function (event) {
-        
+        dataChannel.onmessage = function (event) {    
             console.log("dataChannel.onmessage:", event.data);
 
             switch(event.data.type){
-
                 case 'temp': this.data.temp = event.data.value;
                         break;
                 case 'temp': this.data.temp = event.data.value;
                 break;
                 case 'temp': this.data.temp = event.data.value;
-                break;                case 'temp': this.data.temp = event.data.value;
+                break;                
+                case 'temp': this.data.temp = event.data.value;
                 break;                        
             }
-
         };
     
         dataChannel.onopen = function () {
-        
             console.log('dataChannel.onopen');
-
         };
     
         dataChannel.onclose = function () {
-        
             console.log("dataChannel.onclose");
-
         };
     
         this.pc.textDataChannel = dataChannel;
@@ -175,19 +158,15 @@ export default class RtcClient{
     this.pc.createOffer().then(desc => {
         this.pc.setLocalDescription(desc).then(() => {
             // Send pc.localDescription to peer
-
             let msg ={
                 type:'offer',
                 to: RtcClient.peerEmail, 
                 from: RtcClient.email,
                 offer:this.pc.localDescription,
             }
-
            this.ws.send(JSON.stringify(msg));
-            console.log('local description ',pc.localDescription);
+           console.log('local description ',pc.localDescription);
         });
     });
-}
-
-
+ }
 }

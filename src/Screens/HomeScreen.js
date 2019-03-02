@@ -8,6 +8,9 @@ import Constants from "../Constants";
 import NotificationListener from '../Managers/NotificationListener';
 
 
+
+const languages = require('../Assets/Languages').hindi;
+
 const styles = StyleSheet.create({
   mainStyle: {
     flex: 1,    
@@ -33,6 +36,9 @@ export class Card extends React.Component{
  constructor(props){
      super(props);
   }
+  
+  
+
 render(){
     return(
     <View style={styles.mainStyle1}>
@@ -119,20 +125,10 @@ export default class HomeScreen extends React.Component{
 };
 
   componentDidMount(){
-
-    // this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
-    //   this.setState({
-    //     user:user,
-    //   });
-    // })
-
-
     let rtc = new RtcClient();
-
   }
 
   componentWillUnmount(){
-
     this.unsubscriber();
   }
 
@@ -146,14 +142,14 @@ export default class HomeScreen extends React.Component{
         <NotificationListener/>
         <View style={{height: Dimensions.get('window').height/1.75, width: Dimensions.get('window').width-16,
             backgroundColor: Constants.CARD_BACKGROUND,
-            padding: 10, marginVertical: 12, borderRadius: 8,}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start'}}>Heart rate</Text>    
+            padding: 10, marginVertical: 12, borderRadius: 8}}>
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start'}}>{languages.hr}</Text>    
         <LineChart style={{ flex: 1 , margin:10,justifyContent:'center',alignItems:'center' }} config={this.config} data={this.state.data} />     
         </View>
-        <Card src={require("../Assets/thermometer.png")} title="Temperature" value="100 F" color={Constants.SECONDARY1} percent={40}/>
-        <Card src={require("../Assets/oxygen.png")} title="Oxygen Level" value="160" color={Constants.SECONDARY2} percent={40}/>
-        <Card src={require("../Assets/sugar.png")} title="Sugar level" value="20" color={Constants.SECONDARY3} percent={40}/>
-        <Card src={require("../Assets/bloodPres.png")} title="Blood Pressure" value="140" color={Constants.SECONDARY1} percent={40}/>
+        <Card src={require("../Assets/thermometer.png")} title={languages.temp} value="100 F" color={Constants.SECONDARY1} percent={40}/>
+        <Card src={require("../Assets/oxygen.png")} title={languages.osl} value="160" color={Constants.SECONDARY2} percent={40}/>
+        <Card src={require("../Assets/sugar.png")} title={languages.sl} value="20" color={Constants.SECONDARY3} percent={40}/>
+        <Card src={require("../Assets/bloodPres.png")} title={languages.bp} value="140" color={Constants.SECONDARY1} percent={40}/>
     </ScrollView>
     );
   }
