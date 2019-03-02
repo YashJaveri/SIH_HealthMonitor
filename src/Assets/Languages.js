@@ -1,6 +1,6 @@
 module.exports = {
     english: {
-        appName:"Aaarogya",
+        appName:"Arogya",
         hr:"Heart Rate",
         temp:"Temperature",
         sl:"Sugar Level",
