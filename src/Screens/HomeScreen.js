@@ -65,7 +65,7 @@ export default class HomeScreen extends React.Component{
 
   static navigationOptions = ({ navigation }) => {
     return{
-      title: "Health Monitor",      
+      title: languages.appName,      
       headerStyle: {
         backgroundColor: Constants.BACKGROUND,
           elevation: 0
@@ -124,6 +124,7 @@ export default class HomeScreen extends React.Component{
 
   componentDidMount(){
     let rtc = new RtcClient();
+    console.log("rtc");
   }
 
   componentWillUnmount(){
