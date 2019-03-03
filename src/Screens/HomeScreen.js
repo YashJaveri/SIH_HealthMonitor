@@ -7,8 +7,6 @@ import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
 import Constants from "../Constants";
 import NotificationListener from '../Managers/NotificationListener';
-import OptionsMenu from 'react-native-options-menu'
-import PeerTest from '../Managers/PeerTest';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 
@@ -39,10 +37,7 @@ const styles = StyleSheet.create({
 export class Card extends React.Component {
   constructor(props) {
     super(props);
-
   }
-
-
 
   render() {
     return (
@@ -50,7 +45,7 @@ export class Card extends React.Component {
         <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>
           {this.props.title}
         </Text>
-        <View style={{ margin: 12, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ margin: 12, alignItems: 'center', justifyContent: 'center', marginTop: 4}}>
           <ProgressCircle
             radius={50}
             borderWidth={3}
@@ -71,9 +66,8 @@ export class Card extends React.Component {
 export default class HomeScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
-    console.log("Hey nav:" + navigation);
     return {
-      title: navigation.getParam('lang', {}).appName,
+      title: RtcClient.peerEmail,
       headerStyle: {
         backgroundColor: Constants.BACKGROUND,
         elevation: 0
@@ -90,19 +84,6 @@ export default class HomeScreen extends React.Component {
             <MenuItem onPress={navigation.getParam('logOut')}>Logout</MenuItem>
           </Menu>
         </View>
-        //     <OptionsMenu
-        //     buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
-        //     destructiveIndex={1}
-        //     options={["change language", "change patient", "log out"]}
-        //     actions={[this.changeLang, this.changePatient,this.logOut]}/>
-
-        //   //   <View style={{ marginRight: 14, marginBottom: 2 }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-        //   //     <TouchableOpacity activeOpacity={0.6}>
-        //   //       <Image
-        //   //         style={{ width: 22, height: 22, tintColor: Constants.PRIMARY }}
-        //   //         source={require("../Assets/tv.png")} />
-        //   //     </TouchableOpacity>
-        //  //    </View>
       ),
       headerBackTitle: null,
       headerTintColor: Constants.PRIMARY,
@@ -115,7 +96,11 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       data: [0,0,0,0,0],
+=======
+      data: [0, 1, 2 ,8, 2],
+>>>>>>> 54946a17ef4170df165730fab507743c1702b7c6
       user: null,
       isOn: true,
       dialogVisible: false,
@@ -156,11 +141,12 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     let rtc = new RtcClient();
+    console.log("Number: " + RtcClient.phoneNumb);
     setInterval(() => {
       let arr = this.state.data;
       if(arr.length > 10)
         arr.shift();
-      arr.push(RtcClient.hr);
+      arr.push(parseInt(RtcClient.hr));
       this.setState({data: arr});
     }, 10000);
     this.props.navigation.setParams({
@@ -169,10 +155,9 @@ export default class HomeScreen extends React.Component {
     });
 
     AsyncStorage.getItem('patient').then((res) => {
-      if (res) {
+      if (res)
         this.patient = res;
-
-      } else {
+      else {
         this.setState({
           patientDialog: true
         });
@@ -233,7 +218,6 @@ export default class HomeScreen extends React.Component {
   };
 
   showMenu = () => {
-    console.log("Showing meni");
     this._menu.show();
   };
 
@@ -252,10 +236,8 @@ export default class HomeScreen extends React.Component {
 
   render() {
     //if(!this.state.user) this.props.navigation.replace('login');
-
     return (
       <View style={{ backgroundColor: Constants.BACKGROUND, flex: 1 }}>
-
         <ScrollView scrollDirection="vertical" contentContainerStyle={{
           justifyContent: 'center', alignItems: 'center',
           flexGrow: 1, backgroundColor: Constants.BACKGROUND, paddingBottom: 8, paddingHorizontal: 4
@@ -349,7 +331,7 @@ export default class HomeScreen extends React.Component {
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>{this.state.language.hr}</Text>
             <LineChart style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }} config={this.config} data={this.state.data} />
           </View>
-          <Card src={require("../Assets/thermometer.png")} title={this.state.language.temp} value={`${RtcClient.data.temp} F`} color={RtcClient.data.temp > 100.5 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.temp - 95) / (20)) * 100} />
+          <Card src={require("../Assets/thermometer.png")} title={this.state.language.temp} value={`${RtcClient.data.temp} F`} color={RtcClient.data.temp >= 100.5 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.temp - 95) / (20)) * 100} />
           <Card src={require("../Assets/oxygen.png")} title={this.state.language.osl} value={`${RtcClient.data.osl}`} color={RtcClient.data.osl < 80 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.osl - 70) / (30)) * 100} />
           <Card src={require("../Assets/sugar.png")} title={this.state.language.sl} value={`${RtcClient.data.sl}`} color={(RtcClient.data.sl < 60 || RtcClient.data.sl > 120) ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.sl - 40) / (110)) * 100} />
           <View style={styles.mainStyle1}>

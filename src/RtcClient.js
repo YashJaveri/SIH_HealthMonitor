@@ -10,9 +10,10 @@ import {
 
 export default class RtcClient {
 
-    static peerEmail = "a@a1"; //set this before sending offer
+    static peerEmail = "a@a"; //set this before sending offer
     static videoUrl = null;  //static so that we dont need to create another RtcClient object in Video.js
     static email = null;
+    static phoneNumb = "";
     static data = {
         temp: 100.5,
         osl: 75,
@@ -41,6 +42,7 @@ export default class RtcClient {
             console.log('ws connection opened');
             let msg = {
                 type: 'register',
+                number: RtcClient.phoneNumb,
                 from: RtcClient.email, //send firebase email here
             }
             //send register request
@@ -97,11 +99,6 @@ export default class RtcClient {
             event.channel.onmessage = (ev) => {
                 console.log(ev);
             }
-        }
-
-        this.pc.onaddstream = (stream) => {
-            console.log(stream);
-            RtcClient.videoUrl = stream.toURL();
         }
 
         this.pc.oniceconnectionstatechange = (event) => {
