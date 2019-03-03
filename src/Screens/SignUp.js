@@ -33,6 +33,7 @@ export default class SignUp extends React.Component {
     this.password = "";
     this.confirmPassword = "";
     this.email = "";
+    this.phoneNumb = "";
   }
 
   componentDidMount() {
@@ -40,13 +41,16 @@ export default class SignUp extends React.Component {
     StatusBar.setBarStyle('light-content', true);
   }
 
-  signUp = (email, password, confirmPassword) => {
+  signUp = (email, password, confirmPassword, phoneNumb) => {
 
 
-    if (password !== confirmPassword && password!=="" && email!=="") {
-      Alert.alert('passwords do not match');
+    if (password !== confirmPassword) {
+      Alert.alert('Passwords do not match!');
       return;
-  }
+    } else if (password === "" || email === "" || phoneNumb === "") {
+      Alert.alert('Invalid input!');
+      return;
+    }
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCred) => {
@@ -66,7 +70,7 @@ export default class SignUp extends React.Component {
         <Text style={{ fontSize: 24, marginVertical: Dimensions.get('screen').height / 6, fontWeight: 'bold', color: Constants.PRIMARY }}>WELCOME</Text>
         <View style={[styles.inpBox, { borderBottomWidth: 0.75, borderTopLeftRadius: 6, borderTopRightRadius: 6 }]}>
           <TextInput placeholderTextColor={Constants.LIGHT_GREY}
-            style={{color: Constants.PRIMARY}}
+            style={{ color: Constants.PRIMARY }}
             selectionColor={Constants.SECONDARY1}
             placeholder="Email"
             numberOfLines={1}
@@ -74,9 +78,9 @@ export default class SignUp extends React.Component {
             autoFocus={true}
           />
         </View>
-        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomWidth: 0.75}]}>
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomWidth: 0.75 }]}>
           <TextInput placeholderTextColor={Constants.LIGHT_GREY}
-            style={{color: Constants.PRIMARY}}
+            style={{ color: Constants.PRIMARY }}
             selectionColor={Constants.SECONDARY1}
             placeholder="Password"
             secureTextEntry={true}
@@ -84,15 +88,25 @@ export default class SignUp extends React.Component {
             onChangeText={(text) => { this.password = text }}
           />
         </View>
-        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }]}>
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomWidth: 0.75}]}>
           <TextInput style={{}}
             placeholderTextColor={Constants.LIGHT_GREY}
-            style={{color: Constants.PRIMARY}}
+            style={{ color: Constants.PRIMARY }}
             selectionColor={Constants.SECONDARY1}
             placeholder="Confirm Password"
             numberOfLines={1}
             secureTextEntry={true}
             onChangeText={(text) => { this.confirmPassword = text }}
+          />
+        </View>
+        <View style={[styles.inpBox, { borderTopWidth: 0.75, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }]}>
+          <TextInput style={{}}
+            placeholderTextColor={Constants.LIGHT_GREY}
+            style={{ color: Constants.PRIMARY }}
+            selectionColor={Constants.SECONDARY1}
+            placeholder="Phone Number"
+            numberOfLines={1}
+            onChangeText={(text) => { this.phoneNumb = text }}
           />
         </View>
         <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword)} activeOpacity={0.8}>
@@ -104,7 +118,7 @@ export default class SignUp extends React.Component {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.props.navigation.replace('login')}>
-          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Already User?Sign In</Text>
+          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Already User? Sign In</Text>
         </TouchableOpacity>
       </View>
     );

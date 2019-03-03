@@ -10,12 +10,21 @@ import {
 
 export default class RtcClient {
 
-    static peerEmail = "a@a"; //set this before sending offer
+    static peerEmail = "a@a1"; //set this before sending offer
     static videoUrl = null;  //static so that we dont need to create another RtcClient object in Video.js
     static email = null;
+    static data = {
+        temp: 100.5,
+        osl: 75,
+        sl: 75,
+        hr: null,
+        bp: {
+            hbp: 100,
+            lbp: 80
+        }
+    };
 
     constructor() {
-
         socketURl = 'ws://healthmonitor-signalserver.herokuapp.com';
         this.ws = new WebSocket(socketURl);
 
@@ -25,18 +34,9 @@ export default class RtcClient {
             ]
         };
         this.pc = new RTCPeerConnection(configuration);
-
-        data = {
-            temp: null,
-            heartRate: null,
-            oxygenLvl: null,
-            sugarLvl: null,
-            bloodPressure: null,
-        }
-
         //socket handelers 
 
-        this.ws.onopen = () => {
+        this.ws.onopen = () => {render
             //connection opened
             console.log('ws connection opened');
             let msg = {
@@ -94,10 +94,9 @@ export default class RtcClient {
 
         this.pc.ondatachannel = (event) => {
             console.log("incoming" + event);
-            event.channel.onmessage= (ev)=>{
+            event.channel.onmessage = (ev) => {
                 console.log(ev);
             }
-
         }
 
         this.pc.onaddstream = (stream) => {
@@ -143,16 +142,19 @@ export default class RtcClient {
         dataChannel.onmessage = function (event) {
             console.log("dataChannel.onmessage:" + event.data);
 
-            /*switch (event.data.type) {
+            switch (event.data.type) {
                 case 'temp': this.data.temp = event.data.value;
                     break;
-                case 'temp': this.data.temp = event.data.value;
+                case 'bp': this.data.bp.hbp = event.data.value.split(" ")[0];
+                    this.data.bp.lbp = event.data.value.split(" ")[1];
                     break;
-                case 'temp': this.data.temp = event.data.value;
+                case 'bs': this.data.sl = event.data.value;
                     break;
-                case 'temp': this.data.temp = event.data.value;
+                case 'os': this.data.osl = event.data.value;
                     break;
-            }*/
+                case 'hr': this.data.hr = event.data.value;
+                    break;
+            }
         };
 
         dataChannel.onopen = function () {

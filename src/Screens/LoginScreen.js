@@ -124,7 +124,7 @@ export default class LoginScreen extends React.Component {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.props.navigation.replace('signUp')}>
-          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Sign UP</Text>
+          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Not Registerd? Register</Text>
         </TouchableOpacity>
       </View>
     );

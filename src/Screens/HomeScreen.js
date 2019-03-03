@@ -1,7 +1,7 @@
 import React from "react";
 import ProgressCircle from "react-native-progress-circle";
-import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity , Modal, TextInput ,Button} from "react-native";
-import {Dialog} from 'react-native-simple-dialogs';
+import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Modal, TextInput, Button, Picker, AsyncStorage } from "react-native";
+import { Dialog } from 'react-native-simple-dialogs';
 import LineChart from "react-native-responsive-linechart";
 import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
@@ -9,9 +9,11 @@ import Constants from "../Constants";
 import NotificationListener from '../Managers/NotificationListener';
 import OptionsMenu from 'react-native-options-menu'
 import PeerTest from '../Managers/PeerTest';
+import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 
-const languages = require('../Assets/Languages').english;
+const languages = require('../Assets/Languages');
+const curLang = languages.english;
 
 const styles = StyleSheet.create({
   mainStyle: {
@@ -52,7 +54,7 @@ export class Card extends React.Component {
           <ProgressCircle
             radius={50}
             borderWidth={3}
-            percent={50}
+            percent={this.props.percent}
             color={this.props.color}
             shadowColor={Constants.BACKGROUND}
             bgColor={Constants.CARD_BACKGROUND}
@@ -69,28 +71,39 @@ export class Card extends React.Component {
 export default class HomeScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
+    console.log("Hey nav:" + navigation);
     return {
-      title: languages.appName,
+      title: navigation.getParam('lang', {}).appName,
       headerStyle: {
         backgroundColor: Constants.BACKGROUND,
         elevation: 0
-       },
-       headerRight: (
+      },
+      headerRight: (
+        <View>
+          <Menu
+            ref={navigation.getParam('setMenuRef')}
+            button={<TouchableOpacity onPress={navigation.getParam('showMenu')} style={{ color: Constants.PRIMARY, fontWeight: 'bold' }}><Image source={require('../Assets/menu.png')}
+              style={{ width: 20, height: 20, tintColor: Constants.PRIMARY, marginRight: 8 }} /></TouchableOpacity>}
+          >
+            <MenuItem onPress={navigation.getParam('changeLang')}>Change Language</MenuItem>
+            <MenuItem onPress={navigation.getParam('changePatient')}>Change Patient</MenuItem>
+            <MenuItem onPress={navigation.getParam('logOut')}>Logout</MenuItem>
+          </Menu>
+        </View>
+        //     <OptionsMenu
+        //     buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+        //     destructiveIndex={1}
+        //     options={["change language", "change patient", "log out"]}
+        //     actions={[this.changeLang, this.changePatient,this.logOut]}/>
 
-        <OptionsMenu
-        buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
-        destructiveIndex={1}
-        options={["change language", "change patient", "log out"]}
-        actions={[this.changeLang, this.changePatient,this.logOut]}/>
-
-      //   <View style={{ marginRight: 14, marginBottom: 2 }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-      //     <TouchableOpacity activeOpacity={0.6}>
-      //       <Image
-      //         style={{ width: 22, height: 22, tintColor: Constants.PRIMARY }}
-      //         source={require("../Assets/tv.png")} />
-      //     </TouchableOpacity>
-     //    </View>
-         ),
+        //   //   <View style={{ marginRight: 14, marginBottom: 2 }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+        //   //     <TouchableOpacity activeOpacity={0.6}>
+        //   //       <Image
+        //   //         style={{ width: 22, height: 22, tintColor: Constants.PRIMARY }}
+        //   //         source={require("../Assets/tv.png")} />
+        //   //     </TouchableOpacity>
+        //  //    </View>
+      ),
       headerBackTitle: null,
       headerTintColor: Constants.PRIMARY,
       headerTitleStyle: {
@@ -102,11 +115,14 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [-10, -15, 40, 60, 78, 42, 56],
+      data: [],
       user: null,
-      isOn: true
+      isOn: true,
+      dialogVisible: false,
+      language: languages.english,
+      patientDialog: false,
     };
-    this.unsubscriber = null;
+    //this.unsubscriber = null;
   }
 
   config = {
@@ -137,51 +153,184 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     let rtc = new RtcClient();
+    setInterval(() => {
+      let arr = this.state.data;
+      if(arr.length > 10)
+        arr.shift();
+      arr.push(RtcClient.hr);
+      this.setState({data: arr});
+    }, 10000);
+    this.props.navigation.setParams({
+      lang: this.state.language, showMenu: this.showMenu, changeLang: this.changeLang,
+      changePatient: this.changePatient, logOut: this.logOut, setMenuRef: this.setMenuRef
+    });
+
+    AsyncStorage.getItem('patient').then((res) => {
+      if (res) {
+        this.patient = res;
+
+      } else {
+        this.setState({
+          patientDialog: true
+        });
+      }
+    }).catch((err) => {
+      console.log(err);
+      this.setState({
+        patientDialog: true
+      });
+    })
   }
 
   componentWillUnmount() {
-    this.unsubscriber();
+    //this.unsubscriber();
   }
 
   camToggle = (on) => {
     this.setState({ isOn: on });
   }
 
-  changeLang(){
+  changeLang = () => {
     console.log('change language hit');
+    this.setState({
+      dialogVisible: true,
+    });
+    this.hideMenu();
   }
 
-  changePatient(){
+  changePatient = () => {
     console.log('change patient');
+    this.setState({
+      patientDialog: true
+    });
+    this.hideMenu();
   }
 
-  logOut(){
+  logOut = () => {
     console.log('log out');
+    firebase.auth().signOut();
+    this.hideMenu();
+    this.props.navigation.replace('login');
   }
+
+  _menu = null;
+
+  setMenuRef = ref => {
+    this._menu = ref;
+  };
+
+  hideMenu = () => {
+    this._menu.hide();
+  };
+
+  showMenu = () => {
+    console.log("Showing meni");
+    this._menu.show();
+  };
 
   render() {
-
     //if(!this.state.user) this.props.navigation.replace('login');
 
     return (
-      <ScrollView scrollDirection="vertical" contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND }}
-        style={{ flex: 1, width: Dimensions.get('screen').width }}>
-        <NotificationListener />
+      <View style={{ backgroundColor: Constants.BACKGROUND, flex: 1 }}>
 
-        <View style={{
-          height: Dimensions.get('window').height / 1.75, width: Dimensions.get('window').width - 16,
-          backgroundColor: Constants.CARD_BACKGROUND,
-          padding: 10, marginVertical: 12, borderRadius: 8
-        }}>
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>{languages.hr}</Text>
-          <LineChart style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }} config={this.config} data={this.state.data} />
-        </View>
-        <Card src={require("../Assets/thermometer.png")} title={languages.temp} value="100 F" color={Constants.SECONDARY1} percent={40} />
-        <Card src={require("../Assets/oxygen.png")} title={languages.osl} value="160" color={Constants.SECONDARY2} percent={40} />
-        <Card src={require("../Assets/sugar.png")} title={languages.sl} value="20" color={Constants.SECONDARY3} percent={40} />
-        <Card src={require("../Assets/bloodPres.png")} title={languages.bp} value="140" color={Constants.SECONDARY1} percent={40} />
-      </ScrollView>
-     
+        <ScrollView scrollDirection="vertical" contentContainerStyle={{
+          justifyContent: 'center', alignItems: 'center',
+          flexGrow: 1, backgroundColor: Constants.BACKGROUND, paddingBottom: 8, paddingHorizontal: 4
+        }}
+          style={{ flex: 1, width: Dimensions.get('screen').width }}>
+          <NotificationListener />
+          <Dialog
+            visible={this.state.dialogVisible}
+            title="Custom Dialog"
+            onTouchOutside={() => this.setState({ dialogVisible: false })} >
+            <View>
+              <Picker
+                selectedValue={this.state.language.name}
+                style={{ height: 50, width: 200 }}
+                onValueChange={(itemValue, itemIndex) => {
+                  switch (itemIndex) {
+                    case 0: this.setState({ language: languages.english });
+                      this.setState({ dialogVisible: false });
+                      break;
+                    case 1: this.setState({ language: languages.hindi });
+                      this.setState({ dialogVisible: false });
+                      break;
+                    case 2: this.setState({ language: languages.marathi });
+                      this.setState({ dialogVisible: false });
+                      break;
+                    case 3: this.setState({ language: languages.gujrati });
+                      this.setState({ dialogVisible: false });
+                      break;
+                    case 4: this.setState({ language: languages.urdu });
+                      this.setState({ dialogVisible: false });
+                      break;
+                  }
+
+                }
+                }>
+                <Picker.Item label="English" value="english" />
+                <Picker.Item label="Hindi" value="hindi" />
+                <Picker.Item label="Marathi" value="marathi" />
+                <Picker.Item label="Gujrati" value="gujrati" />
+                <Picker.Item label="Urdu" value="urdu" />
+              </Picker>
+            </View>
+          </Dialog>
+
+          <Dialog
+            visible={this.state.patientDialog}
+            title="Change Patient"
+            onTouchOutside={() => this.setState({ patientDialog: false })} >
+            <View>
+              <TextInput placeholderTextColor='#000'
+                style={{ color: Constants.BACKGROUND }}
+                selectionColor={Constants.SECONDARY1}
+                placeholder="Patient id"
+                numberOfLines={1}
+                onChangeText={(text) => { this.patient = text }}
+                autoFocus={true}
+              />
+              <Button title='submit'
+                color={Constants.BACKGROUND}
+                onPress={() => {
+                  RtcClient.peerEmail = this.patient;
+
+                  this.setState({
+                    patientDialog: false
+                  });
+
+                  AsyncStorage.setItem('patient', this.patient).then((res) => {
+                    console.log(res);
+                  }).catch((err) => {
+                    console.log(err);
+                  });
+                }
+                } />
+            </View>
+          </Dialog>
+          <View style={{
+            height: Dimensions.get('window').height / 1.75, width: Dimensions.get('window').width - 16,
+            backgroundColor: Constants.CARD_BACKGROUND,
+            padding: 10, marginVertical: 12, borderRadius: 8
+          }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>{this.state.language.hr}</Text>
+            <LineChart style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }} config={this.config} data={this.state.data} />
+          </View>
+          <Card src={require("../Assets/thermometer.png")} title={this.state.language.temp} value={`${RtcClient.data.temp} F`} color={RtcClient.data.temp > 100.5 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.temp - 95) / (20)) * 100} />
+          <Card src={require("../Assets/oxygen.png")} title={this.state.language.osl} value={`${RtcClient.data.osl}`} color={RtcClient.data.osl < 80 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.osl - 70) / (30)) * 100} />
+          <Card src={require("../Assets/sugar.png")} title={this.state.language.sl} value={`${RtcClient.data.sl}`} color={(RtcClient.data.sl < 60 || RtcClient.data.sl > 120) ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.sl - 40) / (110)) * 100} />
+          <View style={styles.mainStyle1}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>
+              {this.state.language.bp}
+            </Text>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 25, fontWeight: 'bold', color: ((RtcClient.data.bp.hbp < 90 && RtcClient.data.bp.lbp < 60) || (RtcClient.data.bp.hbp > 150 && RtcClient.data.bp.lbp < 100)) ? Constants.SECONDARY1 : Constants.SECONDARY2, marginVertical: 1 }}>{`${RtcClient.data.bp.hbp}  SDP`}</Text>
+              <Text style={{ fontSize: 25, fontWeight: 'bold', color: ((RtcClient.data.bp.hbp < 90 && RtcClient.data.bp.lbp < 60) || (RtcClient.data.bp.hbp > 150 && RtcClient.data.bp.lbp < 100)) ? Constants.SECONDARY1 : Constants.SECONDARY2, marginVertical: 1 }}>{`${RtcClient.data.bp.lbp}  DDP`}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
