@@ -15,7 +15,13 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontFamily: "lobster",
     color: Constants.PRIMARY
-  }
+  },
+  bottom: {
+    fontSize: 24,
+    fontFamily: "opensans",
+    color: Constants.PRIMARY,
+    margin: 2
+  },
 });
 
 const notifManager = require("../Managers/NotificationManager");
@@ -58,9 +64,6 @@ export default class SplashScreen extends React.Component {
         });
       }
     });
-
-
-
   }
 
   componentWillUnmount() {
@@ -77,7 +80,7 @@ export default class SplashScreen extends React.Component {
       </Text>
         <View style={{ flex: 1 }} />
         <Text style={[styles.bottom, { textAlign: "center" }]}>
-          {"Made with love"}
+          {"Made with 💕"}
         </Text>
         <Text
           style={{
@@ -85,10 +88,10 @@ export default class SplashScreen extends React.Component {
             fontWeight: "bold",
             marginBottom: 50,
             textAlign: "center",
-            color: Constants.PRsMARY
+            color: Constants.PRIMARY
           }}
         >
-          {"Honeypot"}
+          {"TEAM TICCA"}
         </Text>
       </View>
     );

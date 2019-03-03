@@ -10,7 +10,7 @@ import {
 
 export default class RtcClient {
 
-    static peerEmail = "a@a1"; //set this before sending offer
+    static peerEmail = "hari@kanpur"; //set this before sending offer
     static videoUrl = null;  //static so that we dont need to create another RtcClient object in Video.js
     static email = 'yjaveri99@gmail.com';
     static phoneNumb = "";

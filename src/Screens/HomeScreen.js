@@ -96,7 +96,7 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [0,1,2,3,4],
+      data: [52,73,60,81, 65],
       user: null,
       isOn: true,
       dialogVisible: false,
@@ -105,8 +105,8 @@ export default class HomeScreen extends React.Component {
       
      };
     //this.unsubscriber = null;
-  // this.patientList=this.props.navigation.getParam('patientList',['a','b','c']);
-     this.patientList=['a','b','c'];
+  this.patientList=this.props.navigation.getParam('patientList',['a','b','c']);
+  //   this.patientList=['a','b','c'];
 }
 
   config = {
@@ -121,13 +121,13 @@ export default class HomeScreen extends React.Component {
     yAxis: {
       visible: true,
       labelFormatter: v => String(v),
-      labelColor: "#fff",
+      labelColor: "#ffffff",
     },
     xAxis: {
       visible: true
     },
     grid: {
-      stepSize: 15,
+      stepSize: 5,
       backgroundColor: Constants.CARD_BACKGROUND,
     },
     insetY: 10,
@@ -141,11 +141,15 @@ export default class HomeScreen extends React.Component {
       let arr = this.state.data;
       if(arr.length > 10)
         arr.shift();
-      arr.push(parseInt(RtcClient.hr));
+      arr.push(Math.round(RtcClient.data.hr));
       console.log("ARR ARR: "+arr);
       console.log("HR HR: "+this.state.data);
+      console.log('hr ',RtcClient.data.hr);
+
       this.setState({data: arr});
     }, 30000);    
+
+
     this.props.navigation.setParams({
       lang: this.state.language, showMenu: this.showMenu, changeLang: this.changeLang,
       changePatient: this.changePatient, logOut: this.logOut, setMenuRef: this.setMenuRef
@@ -220,7 +224,7 @@ export default class HomeScreen extends React.Component {
 
   setPatient(patient){
 
-   // RtcClient.peerEmail = patient;
+//    RtcClient.peerEmail = patient;
 
     AsyncStorage.setItem('patient', patient).then((res) => {
       console.log(res);
@@ -304,7 +308,7 @@ export default class HomeScreen extends React.Component {
 
                   
                   let arr =this.patientList;
-                 // arr.push(RtcClient.peerEmail);
+                  ///arr.push(RtcClient.peerEmail);
                   this.patientList=arr;
                 }
                 
@@ -329,7 +333,7 @@ export default class HomeScreen extends React.Component {
             <LineChart style={{ flex: 1, margin: 10, justifyContent: 'center', alignItems: 'center' }} config={this.config} data={this.state.data} />
           </View>
           <Card src={require("../Assets/thermometer.png")} title={this.state.language.temp} value={`${RtcClient.data.temp} F`} color={RtcClient.data.temp >= 100.5 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.temp - 95) / (20)) * 100} />
-          <Card src={require("../Assets/oxygen.png")} title={this.state.language.osl} value={`${RtcClient.data.osl}`} color={RtcClient.data.osl < 80 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.osl - 70) / (30)) * 100} />
+          <Card src={require("../Assets/oxygen.png")} title={this.state.language.osl} value={`${RtcClient.data.osl} %`} color={RtcClient.data.osl < 80 ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={RtcClient.data.osl} />
           <Card src={require("../Assets/sugar.png")} title={this.state.language.sl} value={`${RtcClient.data.sl}`} color={(RtcClient.data.sl < 60 || RtcClient.data.sl > 120) ? Constants.SECONDARY1 : Constants.SECONDARY2} percent={((RtcClient.data.sl - 40) / (110)) * 100} />
           <View style={styles.mainStyle1}>
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: Constants.PRIMARY, alignSelf: 'flex-start' }}>
