@@ -42,7 +42,7 @@ export default class RtcClient {
             console.log('ws connection opened');
             let msg = {
                 type: 'register',
-                number:
+                number: RtcClient.phoneNumb,
                 from: RtcClient.email, //send firebase email here
             }
             //send register request

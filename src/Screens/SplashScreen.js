@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, AsyncStorage } from "react-native";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
@@ -19,7 +19,7 @@ export default class SplashScreen extends React.Component{
 
   static navigationOptions = ({ navigation }) => {
     return{
-      title: navigation.getParam('title', "Omic Healthcare")+" " //extra space to avoid probs in Oxygen OS
+      title: navigation.getParam('title', "Arogya")+" " //extra space to avoid probs in Oxygen OS
     }
   }
 
@@ -39,7 +39,10 @@ export default class SplashScreen extends React.Component{
             this.props.navigation.replace('login');
         }else{
             RtcClient.email = user.email;
-            this.props.navigation.replace('home');            
+            AsyncStorage.getItem("Number", "").then((numb) => {
+              RtcClient.phoneNumb = numb;
+              this.props.navigation.replace('home');            
+            });
         }
       });
         

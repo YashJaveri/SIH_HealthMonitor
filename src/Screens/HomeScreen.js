@@ -134,6 +134,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     let rtc = new RtcClient();
+    console.log("Number: " + RtcClient.phoneNumb);
     setInterval(() => {
       let arr = this.state.data;
       if(arr.length > 10)
