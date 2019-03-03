@@ -5,7 +5,6 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
-import {firestore} from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   mainStyle: {
@@ -63,32 +62,33 @@ export default class SignUp extends React.Component {
         console.log('userCred',userCred);
         RtcClient.email = email;
 
-        if(phoneNumb){
-          const ref = firestore.collection("Doctors").doc(userCred.user.uid);
+        // if(phoneNumb){
+        //   const ref = firebase.firestore().collection("Doctors").doc(userCred.user.uid);
     
-          firestore.runTransaction(async transaction=>{
+        //   firestore.runTransaction(async transaction=>{
     
-            const doc = transaction.get(ref);
+        //     const doc = transaction.get(ref);
     
-            if(!doc.exist){
-              transaction.set(ref,{
-                uid:phoneNumb
-              });
-            }else{
-              transaction.update(ref,{
-                uid:phoneNumb
-              });
-            }
+        //     if(!doc.exist){
+        //       transaction.set(ref,{
+        //         uid:phoneNumb
+        //       });
+        //     }else{
+        //       transaction.update(ref,{
+        //         uid:phoneNumb
+        //       });
+        //     }
             
-          });
-        }
+        //   });
+        // }
             
 
 
         this.props.navigation.replace('home');
       })
       .catch((err) => {
-        Alert.alert('Authentication failed' + err);
+        Alert.alert('Authentication failed');
+        console.log('err',err);
       });
   }
 

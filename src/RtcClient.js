@@ -10,9 +10,9 @@ import {
 
 export default class RtcClient {
 
-    static peerEmail = "a@a"; //set this before sending offer
+    static peerEmail = "a@a1"; //set this before sending offer
     static videoUrl = null;  //static so that we dont need to create another RtcClient object in Video.js
-    static email = null;
+    static email = 'yjaveri99@gmail.com';
     static phoneNumb = "";
     static data = {
         temp: 100.5,
@@ -42,12 +42,14 @@ export default class RtcClient {
             console.log('ws connection opened');
             let msg = {
                 type: 'register',
-                number: RtcClient.phoneNumb,
+                phone: RtcClient.phoneNumb,
                 from: RtcClient.email, //send firebase email here
             }
             //send register request
             this.ws.send(JSON.stringify(msg));
             //console.log(JSON.stringify(msg));
+            console.log('rtc peer email',RtcClient.peerEmail);
+            console.log('rtc email',RtcClient.email);
             this.createDataChannel();
             this.sendOffer();
         }
@@ -137,20 +139,22 @@ export default class RtcClient {
         };
 
         dataChannel.onmessage = function (event) {
-            console.log("dataChannel.onmessage:" + event.data);
-
-            switch (event.data.type) {
-                case 'temp': this.data.temp = event.data.value;
+            //console.log("dataChannel.onmessage:" + event.data);
+            let json = JSON.parse(event.data);
+            switch (json.type) {
+                case 'temp': RtcClient.data.temp = json.value;
                     break;
-                case 'bp': this.data.bp.hbp = event.data.value.split(" ")[0];
-                    this.data.bp.lbp = event.data.value.split(" ")[1];
+                case 'bp': RtcClient.data.bp.hbp = json.value.split("/")[0];
+                RtcClient.data.bp.lbp = json.value.split("/")[1];
                     break;
-                case 'bs': this.data.sl = event.data.value;
+                case 'bs': RtcClient.data.sl = json.value;
                     break;
-                case 'os': this.data.osl = event.data.value;
+                case 'os': RtcClient.data.osl = json.value;
                     break;
-                case 'hr': this.data.hr = event.data.value;
+                case 'hr': RtcClient.data.hr = json.value;
                     break;
+                default:console.log('switch case error');
+                break;    
             }
         };
 

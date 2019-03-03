@@ -1,9 +1,5 @@
 import React from "react";
-<<<<<<< HEAD
-import { View, Text, TouchableOpacity, StyleSheet,AsyncStorage } from "react-native";
-=======
-import { View, Text, TouchableOpacity, StyleSheet, AsyncStorage } from "react-native";
->>>>>>> 54946a17ef4170df165730fab507743c1702b7c6
+import { View, Text, Animatable, StyleSheet, AsyncStorage } from "react-native";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
@@ -11,66 +7,89 @@ import RtcClient from '../RtcClient';
 const styles = StyleSheet.create({
   mainStyle: {
     flex: 1,
-    backgroundColor: Constants.GREY1,
-    justifyContent:'center',
-    alignItems:'center',
+    backgroundColor: Constants.BACKGROUND,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  welcome: {
+    fontSize: 42,
+    fontFamily: "lobster",
+    color: Constants.PRIMARY
   }
 });
 
 const notifManager = require("../Managers/NotificationManager");
 
-export default class SplashScreen extends React.Component{
+export default class SplashScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
-    return{
-      title: navigation.getParam('title', "Arogya")+" " //extra space to avoid probs in Oxygen OS
+    return {
+      header: null,
     }
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state ={
+    this.state = {
 
     }
-    this.unsubscriber=null;
+    this.unsubscriber = null;
   }
-  
-  componentDidMount(){
+
+  componentDidMount() {
     notifManager.checkPermissions();
 
-    AsyncStorage.getItem('patientList').then((res)=>{
+    AsyncStorage.getItem('patientList').then((res) => {
       this.patientList = res
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err);
     })
 
     //check user auth 
-    this.unsubscriber = firebase.auth().onAuthStateChanged( (user) =>{
-        if(!user){
-            this.props.navigation.replace('login');
-        }else{
-            RtcClient.email = user.email;
-            
-            AsyncStorage.getItem("Number", "").then((numb) => {
-              RtcClient.phoneNumb = numb;
-              
-              this.props.navigation.replace('home',{'patientList':this.patientList});
-            });
-        }
-      });
-        
+    this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        this.props.navigation.replace('login');
+      } else {
+        RtcClient.email = user.email;
+
+        AsyncStorage.getItem("Number", "").then((numb) => {
+          RtcClient.phoneNumb = numb;
+          setTimeout(() => { this.props.navigation.replace('home', { 'patientList': this.patientList }); }, 2000);
+        });
+      }
+    });
+
 
 
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.unsubscriber();
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <View style={styles.mainStyle}>
-      <Text>SplashScreen</Text>
+        <View style={{ flex: 1 }} />
+        <Text
+          style={styles.welcome}>
+          AROGYA
+      </Text>
+        <View style={{ flex: 1 }} />
+        <Text style={[styles.bottom, { textAlign: "center" }]}>
+          {"Made with love"}
+        </Text>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: "bold",
+            marginBottom: 50,
+            textAlign: "center",
+            color: Constants.PRsMARY
+          }}
+        >
+          {"Honeypot"}
+        </Text>
       </View>
     );
   }

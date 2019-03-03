@@ -96,11 +96,7 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-<<<<<<< HEAD
-      data: [0,0,0,0,0],
-=======
-      data: [0, 1, 2 ,8, 2],
->>>>>>> 54946a17ef4170df165730fab507743c1702b7c6
+      data: [0,1,2,3,4],
       user: null,
       isOn: true,
       dialogVisible: false,
@@ -141,14 +137,15 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     let rtc = new RtcClient();
-    console.log("Number: " + RtcClient.phoneNumb);
     setInterval(() => {
       let arr = this.state.data;
       if(arr.length > 10)
         arr.shift();
       arr.push(parseInt(RtcClient.hr));
+      console.log("ARR ARR: "+arr);
+      console.log("HR HR: "+this.state.data);
       this.setState({data: arr});
-    }, 10000);
+    }, 30000);    
     this.props.navigation.setParams({
       lang: this.state.language, showMenu: this.showMenu, changeLang: this.changeLang,
       changePatient: this.changePatient, logOut: this.logOut, setMenuRef: this.setMenuRef
@@ -223,7 +220,7 @@ export default class HomeScreen extends React.Component {
 
   setPatient(patient){
 
-    RtcClient.peerEmail = patient;
+   // RtcClient.peerEmail = patient;
 
     AsyncStorage.setItem('patient', patient).then((res) => {
       console.log(res);
@@ -307,7 +304,7 @@ export default class HomeScreen extends React.Component {
 
                   
                   let arr =this.patientList;
-                  arr.push(RtcClient.peerEmail);
+                 // arr.push(RtcClient.peerEmail);
                   this.patientList=arr;
                 }
                 
