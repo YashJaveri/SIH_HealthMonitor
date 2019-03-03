@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar, Dimensions, TextInput, AsyncStorage, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar, Dimensions,
+   TextInput, AsyncStorage, Alert } from "react-native";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
@@ -51,6 +52,8 @@ export default class SignUp extends React.Component {
       Alert.alert('Invalid input!');
       return;
     }
+    AsyncStorage.setItem("Number", phoneNumb);
+    RtcClient.phoneNumb = phoneNumb;
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCred) => {
@@ -61,7 +64,6 @@ export default class SignUp extends React.Component {
       .catch((err) => {
         Alert.alert('Authentication failed');
       });
-
   }
 
   render() {
@@ -109,7 +111,7 @@ export default class SignUp extends React.Component {
             onChangeText={(text) => { this.phoneNumb = text }}
           />
         </View>
-        <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword)} activeOpacity={0.8}>
+        <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword, this.phoneNumb)} activeOpacity={0.8}>
           <View style={{
             width: Dimensions.get('screen').width / 1.5, height: 42, borderWidth: 2, borderRadius: 24, borderColor: Constants.PRIMARY,
             marginVertical: 42, justifyContent: 'center', alignItems: 'center'

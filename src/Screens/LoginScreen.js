@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, StatusBar, Dimensions, TextInput, ToastAndroid, AsyncStorage, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, 
+  Platform, StatusBar, Dimensions, TextInput, ToastAndroid, AsyncStorage, Alert } from "react-native";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
@@ -81,14 +82,17 @@ export default class LoginScreen extends React.Component {
         .then((userCred) => {
           console.log('user logged in');
           RtcClient.email = email;
-          this.props.navigation.replace('home');
+          AsyncStorage.getItem("Number").then((numb) => {
+            RtcClient.phoneNumb = numb;
+            this.props.navigation.replace('home');
+          });          
         })
         .catch((err) => {
           Alert.alert('Authentication failed');
         })
     }
     else
-    ToastAndroid.show('Invalid Input', ToastAndroid.SHORT);
+      ToastAndroid.show('Invalid Input', ToastAndroid.SHORT);
   }
 
   render() {
