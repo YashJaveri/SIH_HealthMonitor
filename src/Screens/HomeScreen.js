@@ -1,12 +1,13 @@
 import React from "react";
 import ProgressCircle from "react-native-progress-circle";
-import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity , Modal, TextInput ,Button} from "react-native";
+import {Dialog} from 'react-native-simple-dialogs';
 import LineChart from "react-native-responsive-linechart";
 import firebase from 'react-native-firebase';
 import RtcClient from '../RtcClient';
 import Constants from "../Constants";
 import NotificationListener from '../Managers/NotificationListener';
-
+import OptionsMenu from 'react-native-options-menu'
 import PeerTest from '../Managers/PeerTest';
 
 
@@ -73,15 +74,23 @@ export default class HomeScreen extends React.Component {
       headerStyle: {
         backgroundColor: Constants.BACKGROUND,
         elevation: 0
-      },
-      headerRight: (
-        <View style={{ marginRight: 14, marginBottom: 2 }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-          <TouchableOpacity activeOpacity={0.6}>
-            <Image
-              style={{ width: 22, height: 22, tintColor: Constants.PRIMARY }}
-              source={require("../Assets/tv.png")} />
-          </TouchableOpacity>
-        </View>),
+       },
+       headerRight: (
+
+        <OptionsMenu
+        buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+        destructiveIndex={1}
+        options={["change language", "change patient", "log out"]}
+        actions={[this.changeLang, this.changePatient,this.logOut]}/>
+
+      //   <View style={{ marginRight: 14, marginBottom: 2 }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+      //     <TouchableOpacity activeOpacity={0.6}>
+      //       <Image
+      //         style={{ width: 22, height: 22, tintColor: Constants.PRIMARY }}
+      //         source={require("../Assets/tv.png")} />
+      //     </TouchableOpacity>
+     //    </View>
+         ),
       headerBackTitle: null,
       headerTintColor: Constants.PRIMARY,
       headerTitleStyle: {
@@ -137,6 +146,19 @@ export default class HomeScreen extends React.Component {
   camToggle = (on) => {
     this.setState({ isOn: on });
   }
+
+  changeLang(){
+    console.log('change language hit');
+  }
+
+  changePatient(){
+    console.log('change patient');
+  }
+
+  logOut(){
+    console.log('log out');
+  }
+
   render() {
 
     //if(!this.state.user) this.props.navigation.replace('login');
@@ -145,6 +167,7 @@ export default class HomeScreen extends React.Component {
       <ScrollView scrollDirection="vertical" contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', lexGrow: 1, backgroundColor: Constants.BACKGROUND }}
         style={{ flex: 1, width: Dimensions.get('screen').width }}>
         <NotificationListener />
+
         <View style={{
           height: Dimensions.get('window').height / 1.75, width: Dimensions.get('window').width - 16,
           backgroundColor: Constants.CARD_BACKGROUND,
@@ -158,6 +181,7 @@ export default class HomeScreen extends React.Component {
         <Card src={require("../Assets/sugar.png")} title={languages.sl} value="20" color={Constants.SECONDARY3} percent={40} />
         <Card src={require("../Assets/bloodPres.png")} title={languages.bp} value="140" color={Constants.SECONDARY1} percent={40} />
       </ScrollView>
+     
     );
   }
 }
