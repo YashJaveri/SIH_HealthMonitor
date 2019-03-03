@@ -104,7 +104,7 @@ export default class SignUp extends React.Component {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.props.navigation.replace('login')}>
-          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Already User?Sign In</Text>
+          <Text style={{ color: Constants.SECONDARY1, fontWeight: 'bold' }}>Already User? Sign In</Text>
         </TouchableOpacity>
       </View>
     );

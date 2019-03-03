@@ -13,6 +13,16 @@ export default class RtcClient {
     static peerEmail = "a@a"; //set this before sending offer
     static videoUrl = null;  //static so that we dont need to create another RtcClient object in Video.js
     static email = null;
+    static data = {
+        temp: 100.0,
+        osl: 75,
+        sl: 75,
+        hr: null,
+        bp: {
+            hbp:100,
+            lbp:80
+        }
+    };
 
     constructor() {
 

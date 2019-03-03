@@ -12,6 +12,7 @@
     "react-native": "0.58.5",
     "react-native-background-task": "^0.2.1",
     "react-native-firebase": "^5.2.2",
+    "react-native-material-menu": "^0.4.2",
     "react-native-options-menu": "^2.0.2",
     "react-native-progress-circle": "^2.0.1",
     "react-native-responsive-linechart": "^1.5.0",
