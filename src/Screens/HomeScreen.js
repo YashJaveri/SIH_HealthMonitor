@@ -1,6 +1,6 @@
 import React from "react";
 import ProgressCircle from "react-native-progress-circle";
-import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Modal, TextInput, Button, Picker, AsyncStorage } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Modal, TextInput, Button, Picker, AsyncStorage , FlatList} from "react-native";
 import { Dialog } from 'react-native-simple-dialogs';
 import LineChart from "react-native-responsive-linechart";
 import firebase from 'react-native-firebase';
@@ -115,15 +115,18 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: [0,0,0,0,0],
       user: null,
       isOn: true,
       dialogVisible: false,
       language: languages.english,
       patientDialog: false,
-    };
+      
+     };
     //this.unsubscriber = null;
-  }
+  // this.patientList=this.props.navigation.getParam('patientList',['a','b','c']);
+     this.patientList=['a','b','c'];
+}
 
   config = {
     line: {
@@ -184,6 +187,12 @@ export default class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     //this.unsubscriber();
+
+    AsyncStorage.setItem('patientList',this.patientList).then(res=>{
+      console.log(res);
+    }).catch(err=>{
+      console.log(err);
+    })
   }
 
   camToggle = (on) => {
@@ -227,6 +236,19 @@ export default class HomeScreen extends React.Component {
     console.log("Showing meni");
     this._menu.show();
   };
+
+  setPatient(patient){
+
+    RtcClient.peerEmail = patient;
+
+    AsyncStorage.setItem('patient', patient).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+    
+    console.log('patient changed!!',RtcClient.peerEmail);
+  }
 
   render() {
     //if(!this.state.user) this.props.navigation.replace('login');
@@ -294,19 +316,29 @@ export default class HomeScreen extends React.Component {
               <Button title='submit'
                 color={Constants.BACKGROUND}
                 onPress={() => {
-                  RtcClient.peerEmail = this.patient;
+                  
+                  this.setPatient(this.patient);
 
                   this.setState({
                     patientDialog: false
                   });
 
-                  AsyncStorage.setItem('patient', this.patient).then((res) => {
-                    console.log(res);
-                  }).catch((err) => {
-                    console.log(err);
-                  });
+                  
+                  let arr =this.patientList;
+                  arr.push(RtcClient.peerEmail);
+                  this.patientList=arr;
                 }
+                
                 } />
+
+                <FlatList 
+                  style={{marginTop:5}}
+                  data={this.patientList}
+                  renderItem={({item}) => <Text style={{color:'#000',fontSize:15}} onPress={(text)=>{
+                    //set patient as this one
+                    this.setPatient(text)
+                  }}>{item}</Text>}
+                />
             </View>
           </Dialog>
           <View style={{

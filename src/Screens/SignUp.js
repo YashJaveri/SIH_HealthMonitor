@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
+import {firestore} from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   mainStyle: {
@@ -52,14 +53,39 @@ export default class SignUp extends React.Component {
       return;
     }
 
+
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCred) => {
-        console.log('user created ');
+        console.log('userCred',userCred);
         RtcClient.email = email;
+
+        if(phoneNumb){
+          const ref = firestore.collection("Doctors").doc(userCred.user.uid);
+    
+          firestore.runTransaction(async transaction=>{
+    
+            const doc = transaction.get(ref);
+    
+            if(!doc.exist){
+              transaction.set(ref,{
+                uid:phoneNumb
+              });
+            }else{
+              transaction.update(ref,{
+                uid:phoneNumb
+              });
+            }
+            
+          });
+        }
+            
+
+
         this.props.navigation.replace('home');
       })
       .catch((err) => {
-        Alert.alert('Authentication failed');
+        Alert.alert('Authentication failed' + err);
       });
 
   }
@@ -109,7 +135,7 @@ export default class SignUp extends React.Component {
             onChangeText={(text) => { this.phoneNumb = text }}
           />
         </View>
-        <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword)} activeOpacity={0.8}>
+        <TouchableOpacity onPress={() => this.signUp(this.email, this.password, this.confirmPassword,this.phoneNumb)} activeOpacity={0.8}>
           <View style={{
             width: Dimensions.get('screen').width / 1.5, height: 42, borderWidth: 2, borderRadius: 24, borderColor: Constants.PRIMARY,
             marginVertical: 42, justifyContent: 'center', alignItems: 'center'

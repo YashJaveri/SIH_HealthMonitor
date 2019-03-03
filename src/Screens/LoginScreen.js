@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import Constants from "../Constants";
 import RtcClient from '../RtcClient';
 
+
 const styles = StyleSheet.create({
   mainStyle: {
     flex: 1,

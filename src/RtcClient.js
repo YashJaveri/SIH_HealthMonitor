@@ -36,7 +36,7 @@ export default class RtcClient {
         this.pc = new RTCPeerConnection(configuration);
         //socket handelers 
 
-        this.ws.onopen = () => {render
+        this.ws.onopen = () => {
             //connection opened
             console.log('ws connection opened');
             let msg = {
